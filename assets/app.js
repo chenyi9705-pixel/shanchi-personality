@@ -176,20 +176,54 @@
     show('cover');
   }
 
-  /* ---------- 分享 ---------- */
+  /* ---------- 保存档案 ---------- */
   function share() {
     var code = document.getElementById('result-code').textContent;
     var name = document.getElementById('result-name').textContent;
-    var text = '我的超级能量人格是 ' + code + ' · ' + name + '，快来测测你是哪个超级能量人格！';
-    if (navigator.share) {
-      navigator.share({ title: '山侈·超级能量人格档案', text: text, url: window.location.href }).catch(function () {});
-    } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(text + ' ' + window.location.href).then(function () {
-        toast('链接已复制，快去分享吧');
-      }, function () { toast('请手动复制链接分享'); });
-    } else {
-      toast('请手动复制链接分享');
-    }
+    var oneline = document.getElementById('result-oneline').textContent;
+    var analysis = document.getElementById('result-analysis').textContent;
+    var advantage = document.getElementById('result-advantage').textContent;
+    var ignore = document.getElementById('result-ignore').textContent;
+    var formula = document.getElementById('result-formula').textContent;
+    var supplement = document.getElementById('result-supplement').textContent;
+    var recPot = document.getElementById('rec-pot').textContent;
+    var recSet = document.getElementById('rec-set').textContent;
+    var recAdd = document.getElementById('rec-add').textContent;
+    var tags = Array.from(document.querySelectorAll('#result-tags .tag')).map(function (t) { return t.textContent; }).join(' ｜ ');
+
+    var date = new Date();
+    var dateStr = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+
+    var content = '山侈 · 超级能量人格档案\n' +
+      '========================================\n\n' +
+      '生成日期：' + dateStr + '\n\n' +
+      '【人格代码】' + code + '\n' +
+      '【人格名称】' + name + '\n' +
+      '【人格标签】' + tags + '\n\n' +
+      '【一句话结论】\n' + oneline + '\n\n' +
+      '【人格解析】\n' + analysis + '\n\n' +
+      '【饮食优势】\n' + advantage + '\n\n' +
+      '【容易被忽略的方向】\n' + ignore + '\n\n' +
+      '【本次优先补足方向】\n' + supplement + '\n\n' +
+      '【专属补能公式】\n' + formula + '\n\n' +
+      '【山侈为你推荐】\n' +
+      '  锅底：' + recPot + '\n' +
+      '  套餐：' + recSet + '\n' +
+      '  建议加菜：' + recAdd + '\n\n' +
+      '========================================\n' +
+      '本结果依据答题时的饮食选择生成，仅用于饮食偏好分析与点餐参考，\n' +
+      '不代表真实营养摄入量、身体状况或医学诊断。';
+
+    var blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = '山侈超级能量人格档案_' + code + '_' + dateStr + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    toast('档案已保存到下载文件夹');
   }
 
   function toast(msg) {
